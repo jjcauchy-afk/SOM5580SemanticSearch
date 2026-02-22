@@ -1,12 +1,18 @@
 import streamlit as st
-# 1. Install dependencies: pip install sentence-transformers
 from sentence_transformers import SentenceTransformer, util
 
-# 2. Load a pre-trained model
-# 'all-MiniLM-L6-v2' is fast and lightweight
-model = SentenceTransformer('all-MiniLM-L6-v2')
+# 1. Page Config & Title
+st.set_page_config(page_title="Semantic Search", page_icon="🔍")
+st.title("🔍 Semantic Search App")
 
-# 3. Define your corpus (the documents to search through)
+# 2. Load Model (Cached so it only loads once)
+@st.cache_resource
+def load_model():
+    return SentenceTransformer('all-MiniLM-L6-v2')
+
+model = load_model()
+
+# 3. Define Corpus
 corpus = [
     "The capital of France is Paris.",
     "A man is eating a piece of bread.",
@@ -15,19 +21,22 @@ corpus = [
     "London is the largest city in the UK."
 ]
 
-# 4. Encode the corpus into embeddings
+# 4. Pre-encode Corpus
 corpus_embeddings = model.encode(corpus, convert_to_tensor=True)
 
-# 5. Define a query
-#query = "Which programming language is popula?"
-query = "Which city is the Lodon capital?"
+# 5. User Input
+query = st.text_input("Enter your search query:", "Which city is the London capital?")
 
-# 6. Encode the query and find similarity
-query_embedding = model.encode(query, convert_to_tensor=True)
+if query:
+    # 6. Encode Query & Search
+    query_embedding = model.encode(query, convert_to_tensor=True)
+    hits = util.semantic_search(query_embedding, corpus_embeddings, top_k=1)
 
-# Use util.semantic_search for a quick top-k retrieval
-hits = util.semantic_search(query_embedding, corpus_embeddings, top_k=1)
-
-# 7. Print the most similar result
-for hit in hits[0]:
-    print(f"Result: {corpus[hit['corpus_id']]} (Score: {hit['score']:.4f})")
+    # 7. Display Results
+    st.subheader("Top Result:")
+    for hit in hits[0]:
+        score = hit['score']
+        result_text = corpus[hit['corpus_id']]
+        
+        st.success(f"**Result:** {result_text}")
+        st.info(f"**Similarity Score:** {score:.4f}")
