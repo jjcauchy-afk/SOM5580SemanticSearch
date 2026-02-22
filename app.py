@@ -72,23 +72,25 @@ def main():
     model = load_embedding_model()
 
     # Sidebar: Data Source Settings
-    with st.sidebar:
-        st.subheader("Data Source")
-        # Option 1: File Upload
-        uploaded_file = st.file_uploader(
-            "Option 1: Upload Text File (.txt)",
-            type = ["txt"],
-            help = "Supports plain text files. UTF-8 encoding is recommended."
-        )
+    st.subheader("Step 1. Prepare Data Source")
+    # Option 1: File Upload
+    uploaded_file = st.file_uploader(
+        "Option 1: Upload Text File (.txt)",
+        type = ["txt"],
+        help = "Supports plain text files. UTF-8 encoding is recommended."
+    )
 
-        # Option 2: Manual Input
-        manual_text = st.text_area(
-            "Option 2: Paste Text Directly",
-            height = 200,
-            placeholder = "Paste your content here..."
-        )
+    # Option 2: Manual Input
+    manual_text = st.text_area(
+        "Option 2: Paste Text Directly",
+        height = 200,
+        placeholder = "Paste your content here..."
+    )
 
-        # Parameters
+    # Parameters
+    st.subheader("Step 2. Select Number of Results")
+    col_slider, _ = st.columns([1, 1]) 
+    with col_slider:
         top_k = st.slider("Number of Results", min_value=1, max_value=10, value=5)
 
     # Handle Data Source
@@ -108,8 +110,15 @@ def main():
         st.success("✅ Using manually entered text")
 
     # Search Section
-    st.subheader("Start Searching")
+    st.subheader("Step 3. Start Searching")
     query = st.text_input("Enter search keywords or sentences", placeholder="e.g., Application scenarios of AI...")
+
+    # UI Guidance
+    if not text_source:
+        st.info("💡 Please upload a file or enter text in the sidebar to begin.")
+    elif text_source and not query:
+        st.info("💡 Enter a query and click 'Search' to see semantic matches.")
+
     search_btn = st.button("Search", type="primary", disabled=not (text_source and query))
 
     # Execution
@@ -127,12 +136,6 @@ def main():
             for idx, result in enumerate(results, 1):
                 with st.expander(f"Result {idx} (Similarity: {result['similarity']}%)"):
                     st.write(result["text"])
-
-    # UI Guidance
-    if not text_source:
-        st.info("💡 Please upload a file or enter text in the sidebar to begin.")
-    elif text_source and not query:
-        st.info("💡 Enter a query and click 'Search' to see semantic matches.")
 
 
 if __name__ == "__main__":
