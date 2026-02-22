@@ -2,8 +2,8 @@ import streamlit as st
 from sentence_transformers import SentenceTransformer, util
 
 # 1. Page Config & Title
-st.set_page_config(page_title="Semantic Search 5", page_icon="🔍")
-st.title("🔍 Semantic Search App")
+st.set_page_config(page_title="Semantic Search", page_icon="🔍")
+st.title("🔍 Semantic Search App 2")
 
 # 2. Load Model (Cached so it only loads once)
 @st.cache_resource
