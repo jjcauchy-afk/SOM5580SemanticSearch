@@ -1,7 +1,7 @@
 import streamlit as st
 
 # Use st.write for a simple text message
-st.write("Hello World!")
+st.write("Hello World2!")
 
 # Or use st.title for a larger, bold header
 st.title("👋 Hello Streamlit!")
