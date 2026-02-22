@@ -6,7 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 # -------------------------- 页面基础配置 --------------------------
 st.set_page_config(
-    page_title="语义搜索工具",
+    page_title="ISOM5580 Semantic Search",
     page_icon="🔍",
     layout="wide"
 )
